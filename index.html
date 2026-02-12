@@ -1,0 +1,2446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campeonato Automático - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --info: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--gray-light);
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background-color: var(--gray-light);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .sidebar-stats {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .stat:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4cc9f0, #4895ef);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(76, 201, 240, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #e01e69);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(247, 37, 133, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #e68a19);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(248, 150, 30, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Content Area */
+        .content-area {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            min-height: 600px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--box-shadow);
+            border-top: 4px solid var(--primary);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .data-table thead {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+        .data-table th {
+            padding: 20px 15px;
+            text-align: left;
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-table th:first-child {
+            border-top-left-radius: var(--border-radius);
+        }
+
+        .data-table th:last-child {
+            border-top-right-radius: var(--border-radius);
+        }
+
+        .data-table td {
+            padding: 18px 15px;
+            border-bottom: 1px solid var(--gray-light);
+            transition: var(--transition);
+        }
+
+        .data-table tbody tr:hover td {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tbody tr:last-child td:first-child {
+            border-bottom-left-radius: var(--border-radius);
+        }
+
+        .data-table tbody tr:last-child td:last-child {
+            border-bottom-right-radius: var(--border-radius);
+        }
+
+        /* Input Styles */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 15px;
+            transition: var(--transition);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .input-small {
+            width: 80px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .input-checkbox {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .badge-primary {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+
+        .badge-success {
+            background: rgba(76, 201, 240, 0.1);
+            color: #4cc9f0;
+        }
+
+        .badge-danger {
+            background: rgba(247, 37, 133, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-warning {
+            background: rgba(248, 150, 30, 0.1);
+            color: var(--warning);
+        }
+
+        /* Queda Tabs */
+        .quedas-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .queda-tab {
+            padding: 12px 24px;
+            background: var(--gray-light);
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .queda-tab:hover {
+            background: #dbe4ff;
+            color: var(--primary);
+        }
+
+        .queda-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .tab-close {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: 0;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .tab-close:hover {
+            opacity: 1;
+        }
+
+        /* Team Cards */
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--gray-light);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .team-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .team-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .team-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: var(--gray-light);
+            color: var(--gray);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .action-btn.edit:hover {
+            background: var(--success);
+        }
+
+        .action-btn.delete:hover {
+            background: var(--danger);
+        }
+
+        .team-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .team-stat {
+            text-align: center;
+        }
+
+        .team-stat-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+        }
+
+        .team-stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.4s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .modal-header h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            color: var(--danger);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        /* Rankings */
+        .ranking-card {
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 25px;
+        }
+
+        .ranking-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+        }
+
+        .ranking-title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .ranking-subtitle {
+            opacity: 0.9;
+            font-size: 15px;
+        }
+
+        .ranking-list {
+            padding: 0;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--gray-light);
+            transition: var(--transition);
+        }
+
+        .ranking-item:hover {
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .ranking-item:last-child {
+            border-bottom: none;
+        }
+
+        .ranking-position {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+            border-radius: 12px;
+            margin-right: 20px;
+        }
+
+        .position-1 {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+
+        .position-2 {
+            background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+        }
+
+        .position-3 {
+            background: linear-gradient(135deg, #CD7F32, #A6692E);
+        }
+
+        .position-other {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+        .ranking-team {
+            flex: 1;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .ranking-stats {
+            display: flex;
+            gap: 20px;
+        }
+
+        .ranking-stat {
+            text-align: center;
+            min-width: 70px;
+        }
+
+        .ranking-stat-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .ranking-stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            text-transform: uppercase;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+            
+            .header-actions {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .teams-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-table {
+                font-size: 14px;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: 12px 8px;
+            }
+        }
+
+        /* Utilities */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .mt-20 { margin-top: 20px; }
+        .mb-20 { margin-bottom: 20px; }
+        .mt-30 { margin-top: 30px; }
+        .mb-30 { margin-bottom: 30px; }
+        .p-20 { padding: 20px; }
+        .w-100 { width: 100%; }
+        .d-flex { display: flex; }
+        .align-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-10 { gap: 10px; }
+        .gap-15 { gap: 15px; }
+        .gap-20 { gap: 20px; }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            color: var(--gray-light);
+            margin-bottom: 20px;
+        }
+
+        .empty-state-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .empty-state-desc {
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="logo-text">CAMPEONATO</div>
+            </div>
+            
+            <div class="nav-menu">
+                <div class="nav-item active" data-tab="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" data-tab="teams">
+                    <i class="fas fa-users"></i>
+                    <span>Times</span>
+                </div>
+                <div class="nav-item" data-tab="quedas">
+                    <i class="fas fa-list-ol"></i>
+                    <span>Quedas</span>
+                </div>
+                <div class="nav-item" data-tab="ranking">
+                    <i class="fas fa-medal"></i>
+                    <span>Classificação</span>
+                </div>
+                <div class="nav-item" data-tab="config">
+                    <i class="fas fa-cog"></i>
+                    <span>Configurações</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-stats">
+                <div class="stat">
+                    <span>Times</span>
+                    <span class="stat-value" id="sidebar-teams-count">0</span>
+                </div>
+                <div class="stat">
+                    <span>Quedas</span>
+                    <span class="stat-value" id="sidebar-quedas-count">0</span>
+                </div>
+                <div class="stat">
+                    <span>Rodada Atual</span>
+                    <span class="stat-value" id="sidebar-current-queda">-</span>
+                </div>
+                <div class="stat">
+                    <span>Última Atualização</span>
+                    <span class="stat-value" id="sidebar-last-update">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1 id="page-title">Dashboard do Campeonato</h1>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="save-data-btn">
+                        <i class="fas fa-save"></i> Salvar
+                    </button>
+                    <button class="btn btn-success" id="export-btn">
+                        <i class="fas fa-file-export"></i> Exportar
+                    </button>
+                    <button class="btn btn-danger" id="reset-btn">
+                        <i class="fas fa-redo"></i> Resetar
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Tab -->
+                <div class="tab-content active" id="dashboard-tab">
+                    <div class="dashboard-cards">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div>
+                                    <div class="card-title">Times Participantes</div>
+                                </div>
+                            </div>
+                            <div class="card-value" id="card-teams-count">0</div>
+                            <div class="card-desc">Total de times no campeonato</div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-list-ol"></i>
+                                </div>
+                                <div>
+                                    <div class="card-title">Quedas Realizadas</div>
+                                </div>
+                            </div>
+                            <div class="card-value" id="card-quedas-count">0</div>
+                            <div class="card-desc">Rodadas já disputadas</div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div>
+                                    <div class="card-title">Líder Atual</div>
+                                </div>
+                            </div>
+                            <div class="card-value" id="card-leader">-</div>
+                            <div class="card-desc">Time com maior pontuação</div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div>
+                                    <div class="card-title">Pontuação Média</div>
+                                </div>
+                            </div>
+                            <div class="card-value" id="card-avg-points">0</div>
+                            <div class="card-desc">Média de pontos por time</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mb-20">Ações Rápidas</h3>
+                    <div class="dashboard-cards">
+                        <div class="card" style="cursor: pointer;" id="quick-add-team">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div>
+                                    <div class="card-title">Adicionar Time</div>
+                                </div>
+                            </div>
+                            <div class="card-desc">Clique para adicionar um novo time ao campeonato</div>
+                        </div>
+                        
+                        <div class="card" style="cursor: pointer;" id="quick-add-queda">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <div>
+                                    <div class="card-title">Nova Queda</div>
+                                </div>
+                            </div>
+                            <div class="card-desc">Clique para criar uma nova rodada do campeonato</div>
+                        </div>
+                        
+                        <div class="card" style="cursor: pointer;" id="quick-view-ranking">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-medal"></i>
+                                </div>
+                                <div>
+                                    <div class="card-title">Ver Classificação</div>
+                                </div>
+                            </div>
+                            <div class="card-desc">Clique para visualizar a classificação atual</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mt-30 mb-20">Últimas Atualizações</h3>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Ação</th>
+                                    <th>Queda</th>
+                                    <th>Pontos</th>
+                                    <th>Kills</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-updates">
+                                <!-- Preenchido via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Teams Tab -->
+                <div class="tab-content" id="teams-tab">
+                    <div class="d-flex justify-between align-center mb-30">
+                        <h2>Gerenciamento de Times</h2>
+                        <button class="btn btn-success" id="add-team-btn">
+                            <i class="fas fa-plus"></i> Adicionar Time
+                        </button>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="text" class="input-field" id="team-search" placeholder="Buscar time...">
+                    </div>
+                    
+                    <div class="teams-grid" id="teams-grid">
+                        <!-- Times serão carregados aqui -->
+                    </div>
+                </div>
+                
+                <!-- Quedas Tab -->
+                <div class="tab-content" id="quedas-tab">
+                    <div class="d-flex justify-between align-center mb-30">
+                        <h2>Gerenciamento de Quedas</h2>
+                        <button class="btn btn-success" id="add-queda-btn">
+                            <i class="fas fa-plus"></i> Nova Queda
+                        </button>
+                    </div>
+                    
+                    <div class="quedas-tabs" id="quedas-tabs">
+                        <!-- Abas de quedas serão geradas aqui -->
+                    </div>
+                    
+                    <div id="queda-content">
+                        <!-- Conteúdo da queda selecionada será carregado aqui -->
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="fas fa-list-ol"></i>
+                            </div>
+                            <div class="empty-state-title">Nenhuma Queda Selecionada</div>
+                            <div class="empty-state-desc">Selecione uma queda na lista acima ou crie uma nova queda para começar.</div>
+                            <button class="btn btn-primary" id="create-first-queda">
+                                <i class="fas fa-plus"></i> Criar Primeira Queda
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ranking Tab -->
+                <div class="tab-content" id="ranking-tab">
+                    <div class="d-flex justify-between align-center mb-30">
+                        <h2>Classificação Geral</h2>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" id="update-ranking-btn">
+                                <i class="fas fa-sync-alt"></i> Atualizar
+                            </button>
+                            <button class="btn btn-outline" id="configure-ranking-btn">
+                                <i class="fas fa-sliders-h"></i> Configurar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="ranking-card">
+                        <div class="ranking-header">
+                            <div class="ranking-title">TOP 10 - CLASSIFICAÇÃO</div>
+                            <div class="ranking-subtitle">Baseado em <span id="ranking-quedas-count">0</span> quedas</div>
+                        </div>
+                        <div class="ranking-list" id="ranking-list">
+                            <!-- Ranking será carregado aqui -->
+                        </div>
+                    </div>
+                    
+                    <h3 class="mt-30 mb-20">Tabela Detalhada</h3>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Posição</th>
+                                    <th>Time</th>
+                                    <th>Pontos</th>
+                                    <th>Kills</th>
+                                    <th>Total</th>
+                                    <th>Bônus</th>
+                                    <th>Quedas</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ranking-table">
+                                <!-- Tabela de ranking será carregada aqui -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Config Tab -->
+                <div class="tab-content" id="config-tab">
+                    <h2 class="mb-30">Configurações do Campeonato</h2>
+                    
+                    <div class="dashboard-cards">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div>
+                                    <div class="card-title">Gerenciar Dados</div>
+                                </div>
+                            </div>
+                            <div class="card-desc mb-20">Faça backup ou restaure os dados do campeonato</div>
+                            <div class="d-flex gap-10">
+                                <button class="btn btn-outline w-100" id="backup-btn">
+                                    <i class="fas fa-download"></i> Backup
+                                </button>
+                                <button class="btn btn-outline w-100" id="restore-btn">
+                                    <i class="fas fa-upload"></i> Restaurar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-trash"></i>
+                                </div>
+                                <div>
+                                    <div class="card-title">Limpar Dados</div>
+                                </div>
+                            </div>
+                            <div class="card-desc mb-20">Remova todos os dados do campeonato</div>
+                            <button class="btn btn-danger w-100" id="clear-data-btn">
+                                <i class="fas fa-exclamation-triangle"></i> Limpar Tudo
+                            </button>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-file-import"></i>
+                                </div>
+                                <div>
+                                    <div class="card-title">Importar Planilha</div>
+                                </div>
+                            </div>
+                            <div class="card-desc mb-20">Importe dados da planilha Excel</div>
+                            <button class="btn btn-success w-100" id="import-excel-btn">
+                                <i class="fas fa-file-excel"></i> Importar Excel
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <h3 class="mt-30 mb-20">Configurações de Cálculo</h3>
+                    <div class="card p-20">
+                        <div class="input-group">
+                            <label class="input-label">Quedas Consideradas na Classificação</label>
+                            <div id="quedas-config-list">
+                                <!-- Lista de quedas para configuração -->
+                            </div>
+                            <div class="mt-20">
+                                <button class="btn btn-primary" id="apply-config-btn">
+                                    <i class="fas fa-check"></i> Aplicar Configurações
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modals -->
+    <div class="modal" id="team-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="team-modal-title">Adicionar Time</h3>
+                <button class="modal-close" id="close-team-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label class="input-label">Nome do Time</label>
+                    <input type="text" class="input-field" id="team-name-input" placeholder="Digite o nome do time">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-team-modal">Cancelar</button>
+                <button class="btn btn-primary" id="save-team-modal">Salvar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="queda-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="queda-modal-title">Nova Queda</h3>
+                <button class="modal-close" id="close-queda-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label class="input-label">Nome da Queda</label>
+                    <input type="text" class="input-field" id="queda-name-input" placeholder="Ex: QUEDA 1, SEMIFINAL">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Copiar dados de outra queda (opcional)</label>
+                    <select class="input-field" id="copy-from-queda">
+                        <option value="">Não copiar dados</option>
+                        <!-- Opções serão preenchidas via JavaScript -->
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-queda-modal">Cancelar</button>
+                <button class="btn btn-primary" id="save-queda-modal">Criar Queda</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="confirm-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="confirm-modal-title">Confirmação</h3>
+                <button class="modal-close" id="close-confirm-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-modal-message">Tem certeza que deseja realizar esta ação?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-confirm-modal">Cancelar</button>
+                <button class="btn btn-danger" id="confirm-modal-action">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados iniciais baseados na planilha fornecida
+        const initialTeams = [
+            "KAR4 ELITE", "A99 NEW RYZE", "CDD RN 1", "LOS MDM", "A3 REAPERS", 
+            "VIKINGS", "NX PHOENIX", "DF E-SPORTS 2 BASE", "ANYONE'S LEGEND", 
+            "BDM TROP DE ELIPE LENDARIA", "JK NICE TRY", "IDEAL 1EMA"
+        ];
+
+        // Estado da aplicação
+        let teams = [...initialTeams];
+        let quedas = {
+            "QUEDA 1": initialTeams.map((team, i) => {
+                const data = [
+                    { colocacao: 7, pontos: 4, kills: 4, bonus: false },
+                    { colocacao: null, pontos: null, kills: null, bonus: false },
+                    { colocacao: 1, pontos: 12, kills: 13, bonus: true },
+                    { colocacao: 8, pontos: 3, kills: 0, bonus: false },
+                    { colocacao: 6, pontos: 5, kills: 5, bonus: false },
+                    { colocacao: null, pontos: null, kills: null, bonus: false },
+                    { colocacao: null, pontos: null, kills: null, bonus: false },
+                    { colocacao: 5, pontos: 6, kills: 4, bonus: false },
+                    { colocacao: 3, pontos: 8, kills: 4, bonus: false },
+                    { colocacao: 9, pontos: 2, kills: 1, bonus: false },
+                    { colocacao: 2, pontos: 9, kills: 12, bonus: false },
+                    { colocacao: 4, pontos: 7, kills: 0, bonus: false }
+                ];
+                return i < data.length ? data[i] : { colocacao: null, pontos: null, kills: null, bonus: false };
+            }),
+            "QUEDA 2": initialTeams.map((team, i) => {
+                const data = [
+                    { colocacao: 5, pontos: 6, kills: 4, bonus: false },
+                    { colocacao: null, pontos: null, kills: null, bonus: false },
+                    { colocacao: 4, pontos: 7, kills: 6, bonus: false },
+                    { colocacao: 7, pontos: 4, kills: 0, bonus: false },
+                    { colocacao: 1, pontos: 12, kills: 9, bonus: true },
+                    { colocacao: null, pontos: null, kills: null, bonus: false },
+                    { colocacao: null, pontos: null, kills: null, bonus: false },
+                    { colocacao: 8, pontos: 3, kills: 0, bonus: false },
+                    { colocacao: 2, pontos: 9, kills: 11, bonus: false },
+                    { colocacao: 6, pontos: 5, kills: 2, bonus: false },
+                    { colocacao: 3, pontos: 8, kills: 0, bonus: false },
+                    { colocacao: 9, pontos: 2, kills: 0, bonus: false }
+                ];
+                return i < data.length ? data[i] : { colocacao: null, pontos: null, kills: null, bonus: false };
+            }),
+            "QUEDA 3": initialTeams.map(() => ({ colocacao: null, pontos: null, kills: null, bonus: false }))
+        };
+        
+        let ordemQuedas = Object.keys(quedas);
+        let quedasAtivasClassificacao = [...ordemQuedas];
+        let currentQueda = ordemQuedas[0];
+        let recentUpdates = [];
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSavedData();
+            setupNavigation();
+            setupButtons();
+            setupModals();
+            updateUI();
+            updateDashboard();
+            updateRecentUpdates();
+        });
+
+        // Configuração da navegação
+        function setupNavigation() {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const tab = this.getAttribute('data-tab');
+                    
+                    // Atualizar navegação
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Atualizar título da página
+                    const titles = {
+                        'dashboard': 'Dashboard do Campeonato',
+                        'teams': 'Gerenciamento de Times',
+                        'quedas': 'Gerenciamento de Quedas',
+                        'ranking': 'Classificação Geral',
+                        'config': 'Configurações do Campeonato'
+                    };
+                    document.getElementById('page-title').textContent = titles[tab];
+                    
+                    // Mostrar conteúdo correto
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    document.getElementById(`${tab}-tab`).classList.add('active');
+                    
+                    // Atualizar UI específica da tab
+                    if (tab === 'teams') updateTeamsGrid();
+                    if (tab === 'quedas') updateQuedasTab();
+                    if (tab === 'ranking') updateRanking();
+                    if (tab === 'config') updateConfigTab();
+                });
+            });
+        }
+
+        // Atualização geral da UI
+        function updateUI() {
+            // Atualizar sidebar
+            document.getElementById('sidebar-teams-count').textContent = teams.length;
+            document.getElementById('sidebar-quedas-count').textContent = ordemQuedas.length;
+            document.getElementById('sidebar-current-queda').textContent = currentQueda || '-';
+            document.getElementById('sidebar-last-update').textContent = new Date().toLocaleTimeString('pt-BR');
+            
+            // Atualizar dashboard
+            updateDashboard();
+            
+            // Atualizar tabs de quedas
+            updateQuedasTabs();
+        }
+
+        // Atualizar dashboard
+        function updateDashboard() {
+            document.getElementById('card-teams-count').textContent = teams.length;
+            document.getElementById('card-quedas-count').textContent = ordemQuedas.length;
+            
+            // Calcular líder
+            const ranking = calculateRanking();
+            if (ranking.length > 0) {
+                document.getElementById('card-leader').textContent = ranking[0].team;
+                // Calcular média de pontos
+                const avgPoints = ranking.reduce((sum, team) => sum + team.pontos, 0) / ranking.length;
+                document.getElementById('card-avg-points').textContent = avgPoints.toFixed(1);
+            } else {
+                document.getElementById('card-leader').textContent = '-';
+                document.getElementById('card-avg-points').textContent = '0';
+            }
+        }
+
+        // Atualizar atualizações recentes
+        function updateRecentUpdates() {
+            const container = document.getElementById('recent-updates');
+            if (recentUpdates.length === 0) {
+                container.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center" style="padding: 40px;">
+                            <i class="fas fa-history" style="font-size: 24px; color: #ccc; margin-bottom: 10px; display: block;"></i>
+                            <span style="color: #888;">Nenhuma atualização recente</span>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            container.innerHTML = recentUpdates.slice(0, 5).map(update => `
+                <tr>
+                    <td><strong>${update.team}</strong></td>
+                    <td><span class="badge ${update.type === 'pontos' ? 'badge-primary' : update.type === 'kills' ? 'badge-success' : 'badge-warning'}">${update.action}</span></td>
+                    <td>${update.queda}</td>
+                    <td>${update.pontos || '-'}</td>
+                    <td>${update.kills || '-'}</td>
+                    <td>${update.time}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Adicionar atualização recente
+        function addRecentUpdate(team, action, type, queda, pontos, kills) {
+            recentUpdates.unshift({
+                team,
+                action,
+                type,
+                queda,
+                pontos,
+                kills,
+                time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+            });
+            
+            if (recentUpdates.length > 10) {
+                recentUpdates = recentUpdates.slice(0, 10);
+            }
+            
+            updateRecentUpdates();
+            saveData();
+        }
+
+        // Atualizar grid de times
+        function updateTeamsGrid() {
+            const container = document.getElementById('teams-grid');
+            const searchTerm = document.getElementById('team-search')?.value.toLowerCase() || '';
+            
+            const filteredTeams = teams.filter(team => 
+                team.toLowerCase().includes(searchTerm)
+            );
+            
+            if (filteredTeams.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state w-100">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-users-slash"></i>
+                        </div>
+                        <div class="empty-state-title">Nenhum time encontrado</div>
+                        <div class="empty-state-desc">${searchTerm ? 'Tente buscar com outro termo.' : 'Adicione o primeiro time para começar.'}</div>
+                        ${!searchTerm ? `<button class="btn btn-primary mt-20" id="add-first-team">
+                            <i class="fas fa-plus"></i> Adicionar Primeiro Time
+                        </button>` : ''}
+                    </div>
+                `;
+                
+                if (!searchTerm) {
+                    setTimeout(() => {
+                        document.getElementById('add-first-team')?.addEventListener('click', () => openTeamModal());
+                    }, 100);
+                }
+                return;
+            }
+            
+            container.innerHTML = filteredTeams.map((team, index) => {
+                const stats = calculateTeamStats(team);
+                return `
+                    <div class="team-card">
+                        <div class="team-card-header">
+                            <div class="team-name">${team}</div>
+                            <div class="team-actions">
+                                <button class="action-btn edit" data-index="${teams.indexOf(team)}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" data-index="${teams.indexOf(team)}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="team-stats">
+                            <div class="team-stat">
+                                <span class="team-stat-value">${stats.quedas}</span>
+                                <span class="team-stat-label">Quedas</span>
+                            </div>
+                            <div class="team-stat">
+                                <span class="team-stat-value">${stats.pontos}</span>
+                                <span class="team-stat-label">Pontos</span>
+                            </div>
+                            <div class="team-stat">
+                                <span class="team-stat-value">${stats.kills}</span>
+                                <span class="team-stat-label">Kills</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Adicionar eventos aos botões
+            container.querySelectorAll('.action-btn.edit').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    editTeam(index);
+                });
+            });
+            
+            container.querySelectorAll('.action-btn.delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    deleteTeam(index);
+                });
+            });
+            
+            // Adicionar evento de busca
+            const searchInput = document.getElementById('team-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', updateTeamsGrid);
+            }
+        }
+
+        // Calcular estatísticas do time
+        function calculateTeamStats(teamName) {
+            const teamIndex = teams.indexOf(teamName);
+            if (teamIndex === -1) return { quedas: 0, pontos: 0, kills: 0 };
+            
+            let quedasCount = 0;
+            let totalPontos = 0;
+            let totalKills = 0;
+            
+            Object.keys(quedas).forEach(quedaNome => {
+                const data = quedas[quedaNome][teamIndex];
+                if (data && (data.pontos !== null || data.kills !== null)) {
+                    quedasCount++;
+                    totalPontos += data.pontos || 0;
+                    totalKills += data.kills || 0;
+                }
+            });
+            
+            return {
+                quedas: quedasCount,
+                pontos: totalPontos,
+                kills: totalKills
+            };
+        }
+
+        // Atualizar tabs de quedas
+        function updateQuedasTabs() {
+            const container = document.getElementById('quedas-tabs');
+            container.innerHTML = ordemQuedas.map((quedaNome, index) => `
+                <div class="queda-tab ${quedaNome === currentQueda ? 'active' : ''}" data-queda="${quedaNome}">
+                    <span>${quedaNome}</span>
+                    <button class="tab-close" data-queda="${quedaNome}">&times;</button>
+                </div>
+            `).join('');
+            
+            // Adicionar eventos às tabs
+            container.querySelectorAll('.queda-tab').forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    if (!e.target.classList.contains('tab-close')) {
+                        currentQueda = this.getAttribute('data-queda');
+                        updateQuedasTab();
+                        updateUI();
+                    }
+                });
+                
+                tab.querySelector('.tab-close').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const quedaNome = this.getAttribute('data-queda');
+                    deleteQueda(quedaNome);
+                });
+            });
+        }
+
+        // Atualizar conteúdo da aba de quedas
+        function updateQuedasTab() {
+            const container = document.getElementById('queda-content');
+            
+            if (!currentQueda || !quedas[currentQueda]) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-list-ol"></i>
+                        </div>
+                        <div class="empty-state-title">Nenhuma Queda Selecionada</div>
+                        <div class="empty-state-desc">Selecione uma queda na lista acima ou crie uma nova queda para começar.</div>
+                        <button class="btn btn-primary" id="create-first-queda">
+                            <i class="fas fa-plus"></i> Criar Primeira Queda
+                        </button>
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    document.getElementById('create-first-queda')?.addEventListener('click', () => openQuedaModal());
+                }, 100);
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="d-flex justify-between align-center mb-20">
+                    <h3>${currentQueda} - Pontuações</h3>
+                    <div class="header-actions">
+                        <button class="btn btn-outline" id="copy-queda-btn">
+                            <i class="fas fa-copy"></i> Copiar de Outra Queda
+                        </button>
+                        <button class="btn btn-danger" id="clear-queda-btn">
+                            <i class="fas fa-trash"></i> Limpar
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Colocação</th>
+                                <th>Pontos</th>
+                                <th>Kills</th>
+                                <th>Total</th>
+                                <th>Bônus</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="queda-table-body">
+                            ${teams.map((team, index) => {
+                                const data = quedas[currentQueda][index] || { colocacao: null, pontos: null, kills: null, bonus: false };
+                                const total = (data.pontos || 0) + (data.kills || 0);
+                                return `
+                                    <tr>
+                                        <td><strong>${team}</strong></td>
+                                        <td><input type="number" class="input-small colocacao" data-index="${index}" value="${data.colocacao || ''}" min="1" max="99"></td>
+                                        <td><input type="number" class="input-small pontos" data-index="${index}" value="${data.pontos || ''}" min="0"></td>
+                                        <td><input type="number" class="input-small kills" data-index="${index}" value="${data.kills || ''}" min="0"></td>
+                                        <td><strong>${total}</strong></td>
+                                        <td><input type="checkbox" class="input-checkbox bonus" data-index="${index}" ${data.bonus ? 'checked' : ''}></td>
+                                        <td>
+                                            <button class="action-btn delete" data-index="${index}">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            // Adicionar eventos aos inputs
+            container.querySelectorAll('.colocacao, .pontos, .kills').forEach(input => {
+                input.addEventListener('change', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    const type = this.classList.contains('colocacao') ? 'colocacao' : 
+                                 this.classList.contains('pontos') ? 'pontos' : 'kills';
+                    const value = this.value === '' ? null : parseInt(this.value);
+                    
+                    if (!quedas[currentQueda][index]) {
+                        quedas[currentQueda][index] = { colocacao: null, pontos: null, kills: null, bonus: false };
+                    }
+                    
+                    quedas[currentQueda][index][type] = value;
+                    
+                    // Atualizar total
+                    const row = this.closest('tr');
+                    const pontosInput = row.querySelector('.pontos');
+                    const killsInput = row.querySelector('.kills');
+                    const totalCell = row.querySelector('td:nth-child(5)');
+                    const pontos = parseInt(pontosInput.value) || 0;
+                    const kills = parseInt(killsInput.value) || 0;
+                    totalCell.innerHTML = `<strong>${pontos + kills}</strong>`;
+                    
+                    // Adicionar à atualizações recentes
+                    addRecentUpdate(
+                        teams[index], 
+                        type === 'colocacao' ? 'Colocação atualizada' : type === 'pontos' ? 'Pontos atualizados' : 'Kills atualizados',
+                        type === 'pontos' ? 'pontos' : type === 'kills' ? 'kills' : 'colocacao',
+                        currentQueda,
+                        type === 'pontos' ? value : null,
+                        type === 'kills' ? value : null
+                    );
+                    
+                    saveData();
+                    updateDashboard();
+                });
+            });
+            
+            // Adicionar eventos aos checkboxes
+            container.querySelectorAll('.bonus').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    const checked = this.checked;
+                    
+                    if (!quedas[currentQueda][index]) {
+                        quedas[currentQueda][index] = { colocacao: null, pontos: null, kills: null, bonus: false };
+                    }
+                    
+                    quedas[currentQueda][index].bonus = checked;
+                    saveData();
+                });
+            });
+            
+            // Adicionar eventos aos botões
+            container.querySelector('#copy-queda-btn')?.addEventListener('click', () => openCopyQuedaModal());
+            container.querySelector('#clear-queda-btn')?.addEventListener('click', () => clearQueda());
+            
+            container.querySelectorAll('.action-btn.delete').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    deleteTeamFromQueda(index);
+                });
+            });
+        }
+
+        // Atualizar ranking
+        function updateRanking() {
+            const ranking = calculateRanking();
+            
+            // Atualizar contador de quedas
+            document.getElementById('ranking-quedas-count').textContent = quedasAtivasClassificacao.length;
+            
+            // Atualizar lista de ranking (TOP 10)
+            const rankingList = document.getElementById('ranking-list');
+            rankingList.innerHTML = ranking.slice(0, 10).map((team, index) => `
+                <div class="ranking-item">
+                    <div class="ranking-position ${index === 0 ? 'position-1' : index === 1 ? 'position-2' : index === 2 ? 'position-3' : 'position-other'}">
+                        ${index + 1}
+                    </div>
+                    <div class="ranking-team">${team.team}</div>
+                    <div class="ranking-stats">
+                        <div class="ranking-stat">
+                            <div class="ranking-stat-value">${team.pontos}</div>
+                            <div class="ranking-stat-label">Pontos</div>
+                        </div>
+                        <div class="ranking-stat">
+                            <div class="ranking-stat-value">${team.kills}</div>
+                            <div class="ranking-stat-label">Kills</div>
+                        </div>
+                        <div class="ranking-stat">
+                            <div class="ranking-stat-value">${team.pts}</div>
+                            <div class="ranking-stat-label">Total</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Atualizar tabela detalhada
+            const rankingTable = document.getElementById('ranking-table');
+            rankingTable.innerHTML = ranking.map((team, index) => `
+                <tr>
+                    <td><strong>${index + 1}º</strong></td>
+                    <td><strong>${team.team}</strong></td>
+                    <td>${team.pontos}</td>
+                    <td>${team.kills}</td>
+                    <td><strong>${team.pts}</strong></td>
+                    <td>${team.bonus > 0 ? `<span class="badge badge-success">${team.bonus}</span>` : '-'}</td>
+                    <td>${team.quedas}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Calcular ranking
+        function calculateRanking() {
+            return teams.map((team, index) => {
+                let totalKills = 0;
+                let totalPontos = 0;
+                let totalBonus = 0;
+                let quedasCount = 0;
+                
+                quedasAtivasClassificacao.forEach(quedaNome => {
+                    const data = quedas[quedaNome][index];
+                    if (data) {
+                        totalKills += data.kills || 0;
+                        totalPontos += data.pontos || 0;
+                        if (data.bonus) totalBonus++;
+                        if (data.pontos !== null || data.kills !== null) quedasCount++;
+                    }
+                });
+                
+                return {
+                    team,
+                    kills: totalKills,
+                    pontos: totalPontos,
+                    pts: totalKills + totalPontos,
+                    bonus: totalBonus,
+                    quedas: quedasCount
+                };
+            }).sort((a, b) => b.pts - a.pts);
+        }
+
+        // Atualizar tab de configurações
+        function updateConfigTab() {
+            const container = document.getElementById('quedas-config-list');
+            container.innerHTML = ordemQuedas.map(quedaNome => `
+                <div class="d-flex align-center gap-10 mb-10">
+                    <input type="checkbox" id="config-${quedaNome}" class="input-checkbox" ${quedasAtivasClassificacao.includes(quedaNome) ? 'checked' : ''}>
+                    <label for="config-${quedaNome}" style="flex: 1; cursor: pointer;">${quedaNome}</label>
+                </div>
+            `).join('');
+        }
+
+        // Configurar botões
+        function setupButtons() {
+            // Botões do header
+            document.getElementById('save-data-btn').addEventListener('click', () => {
+                saveData();
+                showNotification('Dados salvos com sucesso!', 'success');
+            });
+            
+            document.getElementById('export-btn').addEventListener('click', () => exportToExcel());
+            document.getElementById('reset-btn').addEventListener('click', () => confirmReset());
+            
+            // Ações rápidas do dashboard
+            document.getElementById('quick-add-team')?.addEventListener('click', () => openTeamModal());
+            document.getElementById('quick-add-queda')?.addEventListener('click', () => openQuedaModal());
+            document.getElementById('quick-view-ranking')?.addEventListener('click', () => {
+                document.querySelector('.nav-item[data-tab="ranking"]').click();
+            });
+            
+            // Botões da aba de times
+            document.getElementById('add-team-btn')?.addEventListener('click', () => openTeamModal());
+            
+            // Botões da aba de quedas
+            document.getElementById('add-queda-btn')?.addEventListener('click', () => openQuedaModal());
+            
+            // Botões da aba de ranking
+            document.getElementById('update-ranking-btn')?.addEventListener('click', () => {
+                updateRanking();
+                showNotification('Classificação atualizada!', 'success');
+            });
+            
+            document.getElementById('configure-ranking-btn')?.addEventListener('click', () => {
+                document.querySelector('.nav-item[data-tab="config"]').click();
+            });
+            
+            // Botões da aba de configurações
+            document.getElementById('apply-config-btn')?.addEventListener('click', () => {
+                const novasQuedasAtivas = [];
+                ordemQuedas.forEach(quedaNome => {
+                    const checkbox = document.getElementById(`config-${quedaNome}`);
+                    if (checkbox && checkbox.checked) {
+                        novasQuedasAtivas.push(quedaNome);
+                    }
+                });
+                
+                if (novasQuedasAtivas.length === 0) {
+                    showNotification('Selecione pelo menos uma queda!', 'error');
+                    return;
+                }
+                
+                quedasAtivasClassificacao = novasQuedasAtivas;
+                updateRanking();
+                saveData();
+                showNotification('Configurações aplicadas!', 'success');
+            });
+            
+            document.getElementById('backup-btn')?.addEventListener('click', () => backupData());
+            document.getElementById('restore-btn')?.addEventListener('click', () => restoreData());
+            document.getElementById('clear-data-btn')?.addEventListener('click', () => confirmClearAll());
+            document.getElementById('import-excel-btn')?.addEventListener('click', () => importFromExcel());
+        }
+
+        // Configurar modais
+        function setupModals() {
+            // Modal de time
+            document.getElementById('close-team-modal').addEventListener('click', () => closeTeamModal());
+            document.getElementById('cancel-team-modal').addEventListener('click', () => closeTeamModal());
+            document.getElementById('save-team-modal').addEventListener('click', () => saveTeam());
+            
+            // Modal de queda
+            document.getElementById('close-queda-modal').addEventListener('click', () => closeQuedaModal());
+            document.getElementById('cancel-queda-modal').addEventListener('click', () => closeQuedaModal());
+            document.getElementById('save-queda-modal').addEventListener('click', () => saveQueda());
+            
+            // Modal de confirmação
+            document.getElementById('close-confirm-modal').addEventListener('click', () => closeConfirmModal());
+            document.getElementById('cancel-confirm-modal').addEventListener('click', () => closeConfirmModal());
+        }
+
+        // Funções para times
+        function openTeamModal(teamIndex = null) {
+            const modal = document.getElementById('team-modal');
+            const title = document.getElementById('team-modal-title');
+            const input = document.getElementById('team-name-input');
+            
+            if (teamIndex !== null) {
+                // Modo edição
+                title.textContent = 'Editar Time';
+                input.value = teams[teamIndex];
+                input.setAttribute('data-index', teamIndex);
+            } else {
+                // Modo criação
+                title.textContent = 'Adicionar Time';
+                input.value = '';
+                input.removeAttribute('data-index');
+            }
+            
+            modal.classList.add('active');
+            input.focus();
+        }
+
+        function closeTeamModal() {
+            document.getElementById('team-modal').classList.remove('active');
+        }
+
+        function saveTeam() {
+            const input = document.getElementById('team-name-input');
+            const teamName = input.value.trim();
+            const teamIndex = input.getAttribute('data-index');
+            
+            if (!teamName) {
+                showNotification('Digite um nome para o time!', 'error');
+                return;
+            }
+            
+            if (teamIndex !== null) {
+                // Editar time existente
+                if (teams[teamIndex] !== teamName && teams.includes(teamName)) {
+                    showNotification('Já existe um time com este nome!', 'error');
+                    return;
+                }
+                teams[teamIndex] = teamName;
+                showNotification('Time atualizado com sucesso!', 'success');
+            } else {
+                // Adicionar novo time
+                if (teams.includes(teamName)) {
+                    showNotification('Já existe um time com este nome!', 'error');
+                    return;
+                }
+                teams.push(teamName);
+                
+                // Adicionar dados vazios para o novo time em todas as quedas
+                Object.keys(quedas).forEach(quedaNome => {
+                    quedas[quedaNome].push({ colocacao: null, pontos: null, kills: null, bonus: false });
+                });
+                
+                showNotification('Time adicionado com sucesso!', 'success');
+            }
+            
+            closeTeamModal();
+            updateUI();
+            updateTeamsGrid();
+            saveData();
+            addRecentUpdate(teamName, teamIndex !== null ? 'Time editado' : 'Time adicionado', 'team', null, null, null);
+        }
+
+        function editTeam(index) {
+            openTeamModal(index);
+        }
+
+        function deleteTeam(index) {
+            openConfirmModal(
+                'Excluir Time',
+                `Tem certeza que deseja excluir o time "${teams[index]}"? Todos os dados deste time serão removidos.`,
+                () => {
+                    const teamName = teams[index];
+                    teams.splice(index, 1);
+                    
+                    // Remover dados do time de todas as quedas
+                    Object.keys(quedas).forEach(quedaNome => {
+                        quedas[quedaNome].splice(index, 1);
+                    });
+                    
+                    updateUI();
+                    updateTeamsGrid();
+                    updateRanking();
+                    saveData();
+                    showNotification(`Time "${teamName}" excluído!`, 'success');
+                    addRecentUpdate(teamName, 'Time excluído', 'team', null, null, null);
+                }
+            );
+        }
+
+        function deleteTeamFromQueda(index) {
+            openConfirmModal(
+                'Remover Time da Queda',
+                `Tem certeza que deseja remover o time "${teams[index]}" da queda ${currentQueda}?`,
+                () => {
+                    quedas[currentQueda][index] = { colocacao: null, pontos: null, kills: null, bonus: false };
+                    updateQuedasTab();
+                    saveData();
+                    showNotification(`Time removido da queda ${currentQueda}!`, 'success');
+                    addRecentUpdate(teams[index], 'Removido da queda', 'queda', currentQueda, null, null);
+                }
+            );
+        }
+
+        // Funções para quedas
+        function openQuedaModal() {
+            const modal = document.getElementById('queda-modal');
+            const select = document.getElementById('copy-from-queda');
+            
+            select.innerHTML = '<option value="">Não copiar dados</option>';
+            ordemQuedas.forEach(quedaNome => {
+                if (quedaNome !== currentQueda) {
+                    const option = document.createElement('option');
+                    option.value = quedaNome;
+                    option.textContent = quedaNome;
+                    select.appendChild(option);
+                }
+            });
+            
+            document.getElementById('queda-name-input').value = `QUEDA ${ordemQuedas.length + 1}`;
+            modal.classList.add('active');
+            document.getElementById('queda-name-input').focus();
+        }
+
+        function openCopyQuedaModal() {
+            const modal = document.getElementById('queda-modal');
+            const select = document.getElementById('copy-from-queda');
+            const title = document.getElementById('queda-modal-title');
+            const saveBtn = document.getElementById('save-queda-modal');
+            
+            select.innerHTML = '<option value="">Não copiar dados</option>';
+            ordemQuedas.forEach(quedaNome => {
+                if (quedaNome !== currentQueda) {
+                    const option = document.createElement('option');
+                    option.value = quedaNome;
+                    option.textContent = quedaNome;
+                    select.appendChild(option);
+                }
+            });
+            
+            title.textContent = `Copiar para ${currentQueda}`;
+            saveBtn.textContent = 'Copiar Dados';
+            saveBtn.onclick = () => {
+                const sourceQueda = select.value;
+                if (!sourceQueda) {
+                    showNotification('Selecione uma queda para copiar!', 'error');
+                    return;
+                }
+                
+                quedas[currentQueda] = JSON.parse(JSON.stringify(quedas[sourceQueda]));
+                updateQuedasTab();
+                saveData();
+                closeQuedaModal();
+                showNotification(`Dados copiados de ${sourceQueda} para ${currentQueda}!`, 'success');
+            };
+            
+            modal.classList.add('active');
+        }
+
+        function closeQuedaModal() {
+            const modal = document.getElementById('queda-modal');
+            const saveBtn = document.getElementById('save-queda-modal');
+            
+            // Restaurar configuração padrão do botão
+            saveBtn.textContent = 'Criar Queda';
+            saveBtn.onclick = saveQueda;
+            
+            modal.classList.remove('active');
+        }
+
+        function saveQueda() {
+            const input = document.getElementById('queda-name-input');
+            const select = document.getElementById('copy-from-queda');
+            const quedaName = input.value.trim();
+            const copyFrom = select.value;
+            
+            if (!quedaName) {
+                showNotification('Digite um nome para a queda!', 'error');
+                return;
+            }
+            
+            if (quedas[quedaName]) {
+                showNotification('Já existe uma queda com este nome!', 'error');
+                return;
+            }
+            
+            if (copyFrom) {
+                // Copiar dados da queda especificada
+                quedas[quedaName] = JSON.parse(JSON.stringify(quedas[copyFrom]));
+            } else {
+                // Criar queda com dados vazios
+                quedas[quedaName] = teams.map(() => ({ colocacao: null, pontos: null, kills: null, bonus: false }));
+            }
+            
+            ordemQuedas.push(quedaName);
+            if (!quedasAtivasClassificacao.includes(quedaName)) {
+                quedasAtivasClassificacao.push(quedaName);
+            }
+            
+            currentQueda = quedaName;
+            
+            closeQuedaModal();
+            updateUI();
+            updateQuedasTab();
+            saveData();
+            showNotification(`Queda "${quedaName}" criada com sucesso!`, 'success');
+        }
+
+        function deleteQueda(quedaNome) {
+            if (ordemQuedas.length <= 1) {
+                showNotification('Não é possível remover todas as quedas!', 'error');
+                return;
+            }
+            
+            openConfirmModal(
+                'Excluir Queda',
+                `Tem certeza que deseja excluir a queda "${quedaNome}"? Todos os dados desta queda serão removidos permanentemente.`,
+                () => {
+                    delete quedas[quedaNome];
+                    
+                    const index = ordemQuedas.indexOf(quedaNome);
+                    if (index !== -1) {
+                        ordemQuedas.splice(index, 1);
+                    }
+                    
+                    const ativaIndex = quedasAtivasClassificacao.indexOf(quedaNome);
+                    if (ativaIndex !== -1) {
+                        quedasAtivasClassificacao.splice(ativaIndex, 1);
+                    }
+                    
+                    if (currentQueda === quedaNome) {
+                        currentQueda = ordemQuedas[0] || null;
+                    }
+                    
+                    updateUI();
+                    updateQuedasTab();
+                    updateRanking();
+                    saveData();
+                    showNotification(`Queda "${quedaNome}" excluída!`, 'success');
+                }
+            );
+        }
+
+        function clearQueda() {
+            openConfirmModal(
+                'Limpar Queda',
+                `Tem certeza que deseja limpar todos os dados da queda ${currentQueda}?`,
+                () => {
+                    quedas[currentQueda] = teams.map(() => ({ colocacao: null, pontos: null, kills: null, bonus: false }));
+                    updateQuedasTab();
+                    saveData();
+                    showNotification(`Queda ${currentQueda} limpa!`, 'success');
+                }
+            );
+        }
+
+        // Modal de confirmação
+        function openConfirmModal(title, message, action) {
+            document.getElementById('confirm-modal-title').textContent = title;
+            document.getElementById('confirm-modal-message').textContent = message;
+            
+            const actionBtn = document.getElementById('confirm-modal-action');
+            actionBtn.onclick = () => {
+                action();
+                closeConfirmModal();
+            };
+            
+            document.getElementById('confirm-modal').classList.add('active');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').classList.remove('active');
+        }
+
+        // Funções de dados
+        function saveData() {
+            const data = {
+                teams,
+                quedas,
+                ordemQuedas,
+                quedasAtivasClassificacao,
+                currentQueda,
+                recentUpdates,
+                lastUpdated: new Date().toISOString()
+            };
+            
+            localStorage.setItem('campeonatoData', JSON.stringify(data));
+        }
+
+        function loadSavedData() {
+            const saved = localStorage.getItem('campeonatoData');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    teams = data.teams || teams;
+                    quedas = data.quedas || quedas;
+                    ordemQuedas = data.ordemQuedas || ordemQuedas;
+                    quedasAtivasClassificacao = data.quedasAtivasClassificacao || quedasAtivasClassificacao;
+                    currentQueda = data.currentQueda || currentQueda;
+                    recentUpdates = data.recentUpdates || recentUpdates;
+                } catch (e) {
+                    console.error('Erro ao carregar dados:', e);
+                }
+            }
+        }
+
+        function backupData() {
+            const data = {
+                teams,
+                quedas,
+                ordemQuedas,
+                quedasAtivasClassificacao,
+                currentQueda,
+                recentUpdates,
+                exportedAt: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `campeonato-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Backup criado com sucesso!', 'success');
+        }
+
+        function restoreData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        
+                        openConfirmModal(
+                            'Restaurar Backup',
+                            'Tem certeza que deseja restaurar este backup? Todos os dados atuais serão substituídos.',
+                            () => {
+                                teams = data.teams || teams;
+                                quedas = data.quedas || quedas;
+                                ordemQuedas = data.ordemQuedas || ordemQuedas;
+                                quedasAtivasClassificacao = data.quedasAtivasClassificacao || quedasAtivasClassificacao;
+                                currentQueda = data.currentQueda || currentQueda;
+                                recentUpdates = data.recentUpdates || recentUpdates;
+                                
+                                updateUI();
+                                updateTeamsGrid();
+                                updateQuedasTab();
+                                updateRanking();
+                                updateConfigTab();
+                                saveData();
+                                showNotification('Backup restaurado com sucesso!', 'success');
+                            }
+                        );
+                    } catch (e) {
+                        showNotification('Erro ao ler arquivo de backup!', 'error');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        function confirmClearAll() {
+            openConfirmModal(
+                'Limpar Todos os Dados',
+                'Tem certeza que deseja limpar TODOS os dados do campeonato? Esta ação não pode ser desfeita.',
+                () => {
+                    teams = [];
+                    quedas = {};
+                    ordemQuedas = [];
+                    quedasAtivasClassificacao = [];
+                    currentQueda = null;
+                    recentUpdates = [];
+                    
+                    updateUI();
+                    updateTeamsGrid();
+                    updateQuedasTab();
+                    updateRanking();
+                    saveData();
+                    showNotification('Todos os dados foram limpos!', 'success');
+                }
+            );
+        }
+
+        function confirmReset() {
+            openConfirmModal(
+                'Resetar para Dados Iniciais',
+                'Tem certeza que deseja resetar para os dados iniciais da planilha? Todos os dados atuais serão perdidos.',
+                () => {
+                    teams = [...initialTeams];
+                    quedas = {
+                        "QUEDA 1": initialTeams.map((team, i) => {
+                            const data = [
+                                { colocacao: 7, pontos: 4, kills: 4, bonus: false },
+                                { colocacao: null, pontos: null, kills: null, bonus: false },
+                                { colocacao: 1, pontos: 12, kills: 13, bonus: true },
+                                { colocacao: 8, pontos: 3, kills: 0, bonus: false },
+                                { colocacao: 6, pontos: 5, kills: 5, bonus: false },
+                                { colocacao: null, pontos: null, kills: null, bonus: false },
+                                { colocacao: null, pontos: null, kills: null, bonus: false },
+                                { colocacao: 5, pontos: 6, kills: 4, bonus: false },
+                                { colocacao: 3, pontos: 8, kills: 4, bonus: false },
+                                { colocacao: 9, pontos: 2, kills: 1, bonus: false },
+                                { colocacao: 2, pontos: 9, kills: 12, bonus: false },
+                                { colocacao: 4, pontos: 7, kills: 0, bonus: false }
+                            ];
+                            return i < data.length ? data[i] : { colocacao: null, pontos: null, kills: null, bonus: false };
+                        }),
+                        "QUEDA 2": initialTeams.map((team, i) => {
+                            const data = [
+                                { colocacao: 5, pontos: 6, kills: 4, bonus: false },
+                                { colocacao: null, pontos: null, kills: null, bonus: false },
+                                { colocacao: 4, pontos: 7, kills: 6, bonus: false },
+                                { colocacao: 7, pontos: 4, kills: 0, bonus: false },
+                                { colocacao: 1, pontos: 12, kills: 9, bonus: true },
+                                { colocacao: null, pontos: null, kills: null, bonus: false },
+                                { colocacao: null, pontos: null, kills: null, bonus: false },
+                                { colocacao: 8, pontos: 3, kills: 0, bonus: false },
+                                { colocacao: 2, pontos: 9, kills: 11, bonus: false },
+                                { colocacao: 6, pontos: 5, kills: 2, bonus: false },
+                                { colocacao: 3, pontos: 8, kills: 0, bonus: false },
+                                { colocacao: 9, pontos: 2, kills: 0, bonus: false }
+                            ];
+                            return i < data.length ? data[i] : { colocacao: null, pontos: null, kills: null, bonus: false };
+                        }),
+                        "QUEDA 3": initialTeams.map(() => ({ colocacao: null, pontos: null, kills: null, bonus: false }))
+                    };
+                    ordemQuedas = Object.keys(quedas);
+                    quedasAtivasClassificacao = [...ordemQuedas];
+                    currentQueda = ordemQuedas[0];
+                    recentUpdates = [];
+                    
+                    updateUI();
+                    updateTeamsGrid();
+                    updateQuedasTab();
+                    updateRanking();
+                    saveData();
+                    showNotification('Dados resetados com sucesso!', 'success');
+                }
+            );
+        }
+
+        function importFromExcel() {
+            showNotification('Para importar da planilha Excel, copie e cole os dados manualmente.', 'info');
+        }
+
+        function exportToExcel() {
+            const ranking = calculateRanking();
+            
+            let csvContent = "Posição,Time,Pontos,Kills,Total,Bônus,Quedas\n";
+            ranking.forEach((team, index) => {
+                csvContent += `${index + 1},${team.team},${team.pontos},${team.kills},${team.pts},${team.bonus},${team.quedas}\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `classificacao-${new Date().toISOString().split('T')[0]}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Classificação exportada com sucesso!', 'success');
+        }
+
+        // Notificações
+        function showNotification(message, type = 'info') {
+            // Criar elemento de notificação
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                background: ${type === 'success' ? '#4cc9f0' : type === 'error' ? '#f72585' : '#4361ee'};
+                color: white;
+                border-radius: 10px;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+                z-index: 9999;
+                animation: slideIn 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                max-width: 400px;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remover após 3 segundos
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Adicionar estilos para animações de notificação
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
